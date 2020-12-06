@@ -4,15 +4,18 @@ using RabbitMQ.Client.Events;
 using System;
 using System.Text;
 
+const string hostName = "localhost";
+const string queueName = "mail";
 
 // RabbitMQ bağlantısı oluşturuyoruz.
-var factory = new ConnectionFactory() { HostName = "localhost" };
+var factory = new ConnectionFactory() { HostName = hostName };
 using (var connection = factory.CreateConnection())
 using (var channel = connection.CreateModel())
 {
+    Console.WriteLine($"'{hostName}' üzerinde ki RabbitMQ server'a bağlanıldı.");
 
     // 'mail' kuyruğuna erişiyoruz.
-    channel.QueueDeclare(queue: "mail", durable: false, exclusive: false, autoDelete: false, arguments: null);
+    channel.QueueDeclare(queue: queueName, durable: false, exclusive: false, autoDelete: false, arguments: null);
 
     // 'mail' kuyruğundaki verileri alıyoruz.
     var consumer = new EventingBasicConsumer(channel);
@@ -23,9 +26,9 @@ using (var channel = connection.CreateModel())
         var email = JsonConvert.DeserializeObject<Mail>(message);
         Console.WriteLine($"\nTarih: {email.mailTime}\nBaşlık: {email.Title}\nMail Adresi: {email.MailAddress}\nMesaj: {email.Content}");
     };
-    channel.BasicConsume(queue: "mail", autoAck: true, consumer: consumer);
+    channel.BasicConsume(queue: queueName, autoAck: true, consumer: consumer);
 
-    Console.WriteLine(" Mesaj başarılı ile kuyrukdan alındı.");
+    Console.WriteLine("Kuyruktaki mesajlar başarılı ile alındı.");
 }
 Console.ReadLine();
 
