@@ -13,7 +13,7 @@ using (var channel = connection.CreateModel())
     channel.QueueDeclare(queue: "mail", durable: false, exclusive: false, autoDelete: false, arguments: null);
 
     // göndereceğimiz mail nesnesini tanımlıyoruz ve json'a çeviriyoruz.
-    var email = new Mail(DateTime.Now, "frkan.uykun@gmail.com", "Title", "Content");
+    var email = new Mail(DateTime.Now, "mailaddress@mail.com", "Title", "Content");
     string message = JsonConvert.SerializeObject(email);
 
     // kuyruğa gönderilecek mesajı byte'a çevirmemiz gerekiyor.
